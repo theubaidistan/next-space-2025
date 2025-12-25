@@ -43,16 +43,16 @@
 //   return NextResponse.json(record);
 // }
 //*--------------------------------------------------------------------------------------------------------------------
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { prisma } from '@/lib/prisma';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
   const currentUserEmail = session.user.email;
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   const { targetUserId } = await req.json();
   if (!targetUserId) {
     return NextResponse.json(
-      { error: "Missing targetUserId" },
+      { error: 'Missing targetUserId' },
       { status: 400 }
     );
   }
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   });
   if (!currentUser) {
     return NextResponse.json(
-      { error: "Current user not found" },
+      { error: 'Current user not found' },
       { status: 404 }
     );
   }
@@ -89,15 +89,15 @@ export async function DELETE(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
   const currentUserEmail = session.user.email;
-  const targetUserId = req.nextUrl.searchParams.get("targetUserId");
+  const targetUserId = req.nextUrl.searchParams.get('targetUserId');
 
   if (!targetUserId) {
     return NextResponse.json(
-      { error: "Missing targetUserId" },
+      { error: 'Missing targetUserId' },
       { status: 400 }
     );
   }
@@ -107,7 +107,7 @@ export async function DELETE(req: NextRequest) {
   });
   if (!currentUser) {
     return NextResponse.json(
-      { error: "Current user not found" },
+      { error: 'Current user not found' },
       { status: 404 }
     );
   }

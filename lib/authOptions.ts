@@ -1,7 +1,6 @@
-import NextAuth from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { prisma } from '@/lib/prisma'; // adjust path if needed
+import GithubProvider from 'next-auth/providers/github';
+import { prisma } from './prisma';
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -47,6 +46,3 @@ export const authOptions = {
     },
   },
 };
-
-// ✅ This is required for Next.js API routes
-export default NextAuth(authOptions);
