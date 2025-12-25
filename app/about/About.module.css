@@ -1,0 +1,35 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at top, #eef2ff, #f8fafc);
+}
+
+.card {
+  max-width: 720px;
+  padding: 48px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  background: linear-gradient(90deg, #4f46e5, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #475569;
+}

@@ -1,0 +1,30 @@
+/* Post.module.css */
+
+.postContainer {
+  background: #ffffff; /* clean white background */
+  border-radius: 16px; /* rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  padding: 24px;
+  max-width: 700px;
+  margin: 20px auto;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.postContainer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.postTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827; /* dark gray for readability */
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.postContent {
+  font-size: 1rem;
+  color: #374151; /* slightly lighter gray for text */
+  line-height: 1.6;
+}
