@@ -23,10 +23,11 @@
 //   );
 // }
 //*--------------------------------------------------------------------------------------
-import { getServerSession } from "next-auth";
-import FollowClient from "./FollowClient";
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "../../app/api/auth/[...nextauth]/route";
+import { getServerSession } from 'next-auth';
+import FollowClient from './FollowClient';
+import { prisma } from '@/lib/prisma';
+// import { authOptions } from "../../app/api/auth/[...nextauth]/route";
+import { authOptions } from '@/lib/auth';
 
 interface Props {
   targetUserId: string;

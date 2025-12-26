@@ -71,7 +71,8 @@ import { prisma } from '@/lib/prisma';
 import { ProfileForm } from './ProfileForm';
 import { redirect } from 'next/navigation';
 import { SignOutButton } from '@/components/buttons';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+// import { authOptions } from '../api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);

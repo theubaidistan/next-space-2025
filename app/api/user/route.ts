@@ -20,10 +20,11 @@
 //   return NextResponse.json(user);
 // }
 //*--------------------------------------------------------------------------------------------------------------------------
-import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { prisma } from '@/lib/prisma';
+// import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from '@/lib/auth';
 
 export async function PUT(req: Request) {
   // Get the current session
@@ -31,7 +32,7 @@ export async function PUT(req: Request) {
 
   // If no session or email, return 401
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const currentUserEmail = session.user.email;
@@ -43,7 +44,7 @@ export async function PUT(req: Request) {
   if (data.age !== undefined) {
     const ageNumber = Number(data.age);
     if (isNaN(ageNumber)) {
-      return NextResponse.json({ error: "Invalid age" }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid age' }, { status: 400 });
     }
     data.age = ageNumber;
   }
@@ -59,7 +60,7 @@ export async function PUT(req: Request) {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "Failed to update user" },
+      { error: 'Failed to update user' },
       { status: 500 }
     );
   }
