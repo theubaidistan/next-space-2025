@@ -49,7 +49,6 @@ export default async function UserProfile(props: Props) {
       <p className={styles.bioText}>{bio ?? 'No bio available.'}</p>
 
       <div className={styles.followButtonWrapper}>
-        {/* @ts-expect-error Server Component */}
         <FollowButton targetUserId={params.id} />
       </div>
     </div>

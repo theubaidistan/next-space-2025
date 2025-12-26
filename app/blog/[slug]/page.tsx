@@ -1,3 +1,4 @@
+//* 80%----------------------------------------------------------------------------------------------------
 // import styles from './Post.module.css';
 // export const revalidate = 1200; // not necessary, just for ISR demonstration
 
@@ -149,56 +150,34 @@
 //*-------------------------------------------------------------------------------------------------------
 
 import styles from './Post.module.css';
+import { prisma } from '@/lib/prisma';
 
-export const revalidate = 1200;
+export const revalidate = 1200; // ISR: optional
 
-interface Post {
-  title: string;
-  content: string;
-  slug: string;
-}
-
-// Fix the BASE_URL construction
-const BASE_URL = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-
-async function getPosts(): Promise<Post[]> {
-  try {
-    const res = await fetch(`${BASE_URL}/api/content`, {
-      next: { revalidate: 1200 },
-    });
-
-    if (!res.ok) {
-      console.error(`Failed to fetch posts: ${res.status}`);
-      return [];
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    return [];
-  }
-}
-
+// Generate static params for all posts
 export async function generateStaticParams() {
-  const posts = await getPosts();
+  const posts = await prisma.blogPost.findMany({
+    select: { slug: true },
+  });
 
-  return posts.map((post) => ({
+  return posts.map((post: any) => ({
     slug: post.slug,
   }));
 }
 
 interface BlogPostPageProps {
-  params: Promise<{
+  params: {
     slug: string;
-  }>;
+  };
 }
 
+// Blog post page
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params;
-  const posts = await getPosts();
-  const post = posts.find((post) => post.slug === slug);
+  const { slug } = params;
+
+  const post = await prisma.blogPost.findUnique({
+    where: { slug },
+  });
 
   if (!post) {
     return <h1>Post not found</h1>;
