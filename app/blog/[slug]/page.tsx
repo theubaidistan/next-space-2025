@@ -63,17 +63,19 @@ export async function generateStaticParams() {
   }));
 }
 
-interface Props {
-  params: { slug: string };
+// Correct typing for Next.js 15 dynamic route params
+interface BlogPostPageProps {
+  params: {
+    slug: string;
+  };
 }
 
-export default async function BlogPostPage({ params }: Props) {
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const res = await fetch(`${BASE_URL}/api/content`, {
     next: { revalidate: 1200 },
   });
 
   const posts: Post[] = await res.json();
-
   const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
