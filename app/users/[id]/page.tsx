@@ -138,23 +138,75 @@
 //   );
 // }
 //*-----------------------------------------------------------------------------------------
+// import FollowButton from '@/components/FollowButton/FollowButton';
+// import { prisma } from '@/lib/prisma';
+// import { Metadata } from 'next';
+// import Image from 'next/image';
+// import styles from './Page.module.css';
+
+// interface Props {
+//   params: { id: string };
+// }
+
+// export async function generateMetadata({ params }: Props): Promise<Metadata> {
+//   const user = await prisma.user.findUnique({ where: { id: params.id } });
+//   return { title: `User profile of ${user?.name ?? 'Unknown'}` };
+// }
+
+// export default async function UserProfile({ params }: Props) {
+//   const user = await prisma.user.findUnique({ where: { id: params.id } });
+//   if (!user) return <div>User not found</div>;
+
+//   const { name, bio, image } = user;
+
+//   return (
+//     <div className={styles.container}>
+//       <h1 className={styles.name}>{name}</h1>
+//       <Image
+//         src={image ?? '/mememan.webp'}
+//         alt={`${name}'s profile`}
+//         width={300}
+//         height={300}
+//         className={styles.profileImage}
+//       />
+//       <h3 className={styles.bioTitle}>Bio</h3>
+//       <p className={styles.bioText}>{bio ?? 'No bio available.'}</p>
+//       <div className={styles.followButtonWrapper}>
+//         <FollowButton targetUserId={params.id} />
+//       </div>
+//     </div>
+//   );
+// }
+//*----------------------------------------------------------------------------------------
 import FollowButton from '@/components/FollowButton/FollowButton';
 import { prisma } from '@/lib/prisma';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import styles from './Page.module.css';
 
-interface Props {
-  params: { id: string };
+// No need for a custom Props interface anymore
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params; // ← await here
+  const user = await prisma.user.findUnique({ where: { id } });
+
+  return {
+    title: `User profile of ${user?.name ?? 'Unknown'}`,
+  };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const user = await prisma.user.findUnique({ where: { id: params.id } });
-  return { title: `User profile of ${user?.name ?? 'Unknown'}` };
-}
+export default async function UserProfile({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params; // ← await here
+  const user = await prisma.user.findUnique({ where: { id } });
 
-export default async function UserProfile({ params }: Props) {
-  const user = await prisma.user.findUnique({ where: { id: params.id } });
   if (!user) return <div>User not found</div>;
 
   const { name, bio, image } = user;
@@ -172,7 +224,7 @@ export default async function UserProfile({ params }: Props) {
       <h3 className={styles.bioTitle}>Bio</h3>
       <p className={styles.bioText}>{bio ?? 'No bio available.'}</p>
       <div className={styles.followButtonWrapper}>
-        <FollowButton targetUserId={params.id} />
+        <FollowButton targetUserId={id} />
       </div>
     </div>
   );
