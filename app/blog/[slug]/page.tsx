@@ -149,31 +149,72 @@
 // }
 //*-------------------------------------------------------------------------------------------------------
 
+// import styles from './Post.module.css';
+// import { prisma } from '@/lib/prisma';
+
+// export const revalidate = 1200; // ISR: optional
+
+// // Generate static params for all posts
+// export async function generateStaticParams() {
+//   const posts = await prisma.blogPost.findMany({
+//     select: { slug: true },
+//   });
+
+//   return posts.map((post: any) => ({
+//     slug: post.slug,
+//   }));
+// }
+
+// interface BlogPostPageProps {
+//   params: {
+//     slug: string;
+//   };
+// }
+
+// // Blog post page
+// export default async function BlogPostPage({ params }: BlogPostPageProps) {
+//   const { slug } = params;
+
+//   const post = await prisma.blogPost.findUnique({
+//     where: { slug },
+//   });
+
+//   if (!post) {
+//     return <h1>Post not found</h1>;
+//   }
+
+//   return (
+//     <div className={styles.postContainer}>
+//       <h1 className={styles.postTitle}>{post.title}</h1>
+//       <p className={styles.postContent}>{post.content}</p>
+//     </div>
+//   );
+// }
+//*---------------------------------------------------------------------------------------------------------
 import styles from './Post.module.css';
 import { prisma } from '@/lib/prisma';
 
 export const revalidate = 1200; // ISR: optional
 
-// Generate static params for all posts
+// Generate static params for all posts (unchanged – this still works the same)
 export async function generateStaticParams() {
   const posts = await prisma.blogPost.findMany({
     select: { slug: true },
   });
 
-  return posts.map((post: any) => ({
+  return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
+// Updated props interface for Next.js 15
 interface BlogPostPageProps {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>; // ← params is now a Promise
 }
 
-// Blog post page
+// Blog post page – now async to allow awaiting params
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = params;
+  const { slug } = await params; // ← await the promise
 
   const post = await prisma.blogPost.findUnique({
     where: { slug },
