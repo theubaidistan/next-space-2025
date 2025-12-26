@@ -1,70 +1,115 @@
-"use client"
-import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+// "use client"
+// import { useRouter } from 'next/navigation';
+// import { useState, useTransition } from 'react';
 
-interface Props { 
-    targetUserId: string;
-    isFollowing: boolean;
+// interface Props {
+//     targetUserId: string;
+//     isFollowing: boolean;
+// }
+
+// export default function FollowClient({ targetUserId, isFollowing }: Props) {
+//     const router = useRouter();
+//     const [isPending, startTransition] = useTransition();
+//     const [isFetching, setIsFetching] = useState(false);
+//     const isMutating = isFetching || isPending;
+
+//     const follow = async () => {
+//         setIsFetching(true);
+
+//         const res = await fetch('/api/follow', {
+//             method: 'POST',
+//             body: JSON.stringify({ targetUserId }),
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             }
+//         });
+
+//         setIsFetching(false);
+
+//         console.log(res)
+
+//         startTransition(() => {
+//             // Refresh the current route:
+//             // - Makes a new request to the server for the route
+//             // - Re-fetches data requests and re-renders Server Components
+//             // - Sends the updated React Server Component payload to the client
+//             // - The client merges the payload without losing unaffected
+//             //   client-side React state or browser state
+//             router.refresh();
+//           });
+//     }
+
+//     const unfollow = async () => {
+//         setIsFetching(true);
+
+//         const res = await fetch(`/api/follow?targetUserId=${targetUserId}`, {
+//             method: 'DELETE',
+//         });
+
+//         setIsFetching(false);
+//         startTransition(() =>  router.refresh() );
+//     }
+
+//     if (isFollowing) {
+//         return (
+//             <button onClick={unfollow}>
+//                 {!isMutating ? 'Unfollow' : '...'}
+//             </button>
+//         )
+
+//     } else {
+//         return (
+//             <button onClick={follow}>
+//                 {!isMutating ? 'Follow' : '...'}
+//             </button>
+//         )
+//     }
+
+// }
+
+//*----------------------------------------------------------------------------------------
+'use client';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+
+interface Props {
+  targetUserId: string;
+  isFollowing: boolean;
 }
 
-export default function FollowClient({ targetUserId, isFollowing }: Props) {
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition();
-    const [isFetching, setIsFetching] = useState(false);
-    const isMutating = isFetching || isPending;
+export default function FollowClient({
+  targetUserId,
+  isFollowing: initialFollowing,
+}: Props) {
+  const router = useRouter();
+  const [isFollowing, setIsFollowing] = useState(initialFollowing);
+  const [isPending, startTransition] = useTransition();
 
-    const follow = async () => {
-        setIsFetching(true);
+  const toggleFollow = async () => {
+    setIsFollowing((prev) => !prev); // optimistic update
+    const method = isFollowing ? 'DELETE' : 'POST';
+    const url = isFollowing
+      ? `/api/follow?targetUserId=${targetUserId}`
+      : '/api/follow';
+    const body = isFollowing ? undefined : JSON.stringify({ targetUserId });
 
-        const res = await fetch('/api/follow', {
-            method: 'POST',
-            body: JSON.stringify({ targetUserId }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        setIsFetching(false);
-
-        console.log(res)
-
-        startTransition(() => {
-            // Refresh the current route:
-            // - Makes a new request to the server for the route
-            // - Re-fetches data requests and re-renders Server Components
-            // - Sends the updated React Server Component payload to the client
-            // - The client merges the payload without losing unaffected
-            //   client-side React state or browser state
-            router.refresh();
-          });
+    try {
+      await fetch(url, {
+        method,
+        body,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } catch (err) {
+      console.error(err);
+      setIsFollowing((prev) => !prev); // rollback on error
     }
 
-    
-    const unfollow = async () => {
-        setIsFetching(true);
+    startTransition(() => router.refresh()); // refresh server components
+  };
 
-        const res = await fetch(`/api/follow?targetUserId=${targetUserId}`, {
-            method: 'DELETE',
-        });
-
-        setIsFetching(false);
-        startTransition(() =>  router.refresh() );
-    }
-
-    if (isFollowing) {
-        return (
-            <button onClick={unfollow}>
-                {!isMutating ? 'Unfollow' : '...'}
-            </button>
-        )
-
-    } else {
-        return (
-            <button onClick={follow}>
-                {!isMutating ? 'Follow' : '...'}
-            </button>
-        )
-    }
-
-
+  return (
+    <button onClick={toggleFollow} disabled={isPending}>
+      {isPending ? '...' : isFollowing ? 'Unfollow' : 'Follow'}
+    </button>
+  );
 }
