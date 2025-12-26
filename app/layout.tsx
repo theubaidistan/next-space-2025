@@ -28,7 +28,7 @@ export default function RootLayout({ children }: Props) {
             <footer>
               <p>
                 Created for the{' '}
-                <Link href="https://https://fireship.io/courses/nextjs/.io">
+                <Link href="https://fireship.io/courses/nextjs/.io">
                   Fireship Next.js 15 Full Course
                 </Link>
               </p>
